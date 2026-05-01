@@ -58,9 +58,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         OAuth2User principal = oauthToken.getPrincipal();
 
         try {
-            log.info("Fetching Spotify data for user: {}", principal.getAttribute("id"));
+            log.info("Fetching Spotify data for user: {}", (String) principal.getAttribute("id"));
             userService.fetchAndSaveUserProfile(accessToken, principal);
-            log.info("Successfully saved profile for: {}", principal.getAttribute("display_name"));
+            log.info("Successfully saved profile for: {}", (String) principal.getAttribute("display_name"));
         } catch (Exception e) {
             // Don't crash the login — let the user in even if data fetch partially failed
             log.error("Error during Spotify data fetch for user {}: {}",
