@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Rhythm Match</title>
+
+    <!-- 8-bit retro font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- NES.css — the 8-bit CSS framework -->
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet">
+
+    <!-- Our custom overrides -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body class="retro-bg">
+
+<div class="landing-wrapper">
+
+    <!-- ── TITLE ── -->
+    <div class="title-block">
+        <p class="blink-text">INSERT COIN ►</p>
+        <h1 class="game-title">MUSIC</h1>
+        <h1 class="game-title accent-yellow">RHYTHM</h1>
+        <h1 class="game-title">MATCH</h1>
+    </div>
+
+    <!-- ── TAGLINE ── -->
+    <div class="nes-container is-dark with-title tagline-box">
+        <p class="container-title">OBJECTIVE</p>
+        <p class="tagline-text">
+            ANALYZE YOUR SPOTIFY DNA.<br>
+            FIND YOUR MUSIC SOULMATES.<br>
+            UNMASK YOUR NEMESES.
+        </p>
+    </div>
+
+    <!-- ── FEATURE LIST ── -->
+    <div class="nes-container feature-box">
+        <ul class="nes-list is-disc feature-list">
+            <li>⚡ DEEP AUDIO FEATURE ANALYSIS</li>
+            <li>🎸 GENRE DNA FINGERPRINTING</li>
+            <li>💚 TOP 5 MUSIC SOULMATES</li>
+            <li>💀 TOP 5 MUSIC NEMESES</li>
+            <li>📊 POWERED BY COSINE SIMILARITY DSA</li>
+        </ul>
+    </div>
+
+    <!-- ── LOGIN BUTTON ── -->
+    <div class="cta-section">
+        <a href="/oauth2/authorization/spotify"
+           class="nes-btn is-success press-start-btn">
+            ▶ PRESS START
+        </a>
+        <p class="login-sub">LOGIN WITH SPOTIFY — FREE, FOREVER</p>
+    </div>
+
+    <!-- ── DELETED NOTICE ── -->
+    <div th:if="${param.deleted}" class="nes-container is-warning notice-box">
+        <p>YOUR DATA HAS BEEN DELETED. GAME OVER. 👋</p>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer class="landing-footer">
+        <p>© MUSIC RHYTHM MATCH · NOT AFFILIATED WITH SPOTIFY</p>
+        <p>NO ADS · NO PAYWALLS · OPEN SOURCE</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

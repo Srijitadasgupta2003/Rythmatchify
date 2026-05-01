@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile · Music Rhythm Match</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body class="retro-bg">
+
+<!-- ── NAV ──────────────────────────────────────────────────────────── -->
+<nav class="top-nav">
+    <a th:href="@{/dashboard}" class="nav-back">⬅ BACK TO DASHBOARD</a>
+    <span class="nav-brand">⚙ PROFILE</span>
+</nav>
+
+<div class="profile-page-wrapper">
+
+    <!-- ── IDENTITY CARD ──────────────────────────────────────────────── -->
+    <div th:if="${user}" class="nes-container is-dark profile-identity-card">
+        <h2 class="section-title-small">YOUR IDENTITY</h2>
+        <img th:src="${user.profileImageUrl}"
+             class="pixel-avatar-xl"
+             alt="Profile"
+             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect width=%22120%22 height=%22120%22 fill=%22%231a1a2e%22/><text y=%2280%22 x=%2215%22 font-size=%2260%22>🎵</text></svg>'">
+        <h3 class="profile-display-name" th:text="${user.displayName}">USERNAME</h3>
+        <p class="profile-meta" th:text="'SPOTIFY ID: ' + ${user.spotifyId}">ID</p>
+        <p class="profile-meta"
+           th:text="'LAST SYNC: ' + ${#temporals.format(user.lastLogin, 'dd MMM yyyy · HH:mm')}">DATE</p>
+    </div>
+
+    <!-- ── MUSIC DNA TABLE ────────────────────────────────────────────── -->
+    <div th:if="${user}" class="nes-container is-dark profile-dna-card">
+        <h2 class="section-title-small">YOUR MUSIC DNA</h2>
+        <p class="dna-subtitle">THESE 4 VALUES FORM YOUR TASTE VECTOR — THE MATH BEHIND YOUR MATCHES.</p>
+
+        <div class="dna-rows">
+            <div class="dna-row">
+                <div class="dna-label">⚡ ENERGY</div>
+                <progress class="nes-progress is-success dna-bar"
+                          th:value="${user.avgEnergy != null ? user.avgEnergy * 100 : 50}"
+                          max="100"></progress>
+                <div class="dna-val"
+                     th:text="${user.avgEnergy != null ? #numbers.formatDecimal(user.avgEnergy * 100, 1, 1) + '%' : 'N/A'}">%</div>
+                <div class="dna-desc">Intensity &amp; activity level of your tracks</div>
+            </div>
+            <div class="dna-row">
+                <div class="dna-label">💃 DANCEABILITY</div>
+                <progress class="nes-progress is-primary dna-bar"
+                          th:value="${user.avgDanceability != null ? user.avgDanceability * 100 : 50}"
+                          max="100"></progress>
+                <div class="dna-val"
+                     th:text="${user.avgDanceability != null ? #numbers.formatDecimal(user.avgDanceability * 100, 1, 1) + '%' : 'N/A'}">%</div>
+                <div class="dna-desc">Rhythm stability &amp; beat strength</div>
+            </div>
+            <div class="dna-row">
+                <div class="dna-label">😊 VALENCE</div>
+                <progress class="nes-progress is-warning dna-bar"
+                          th:value="${user.avgValence != null ? user.avgValence * 100 : 50}"
+                          max="100"></progress>
+                <div class="dna-val"
+                     th:text="${user.avgValence != null ? #numbers.formatDecimal(user.avgValence * 100, 1, 1) + '%' : 'N/A'}">%</div>
+                <div class="dna-desc">Musical positiveness / happiness</div>
+            </div>
+            <div class="dna-row">
+                <div class="dna-label">🎸 ACOUSTICNESS</div>
+                <progress class="nes-progress is-error dna-bar"
+                          th:value="${user.avgAcousticness != null ? user.avgAcousticness * 100 : 50}"
+                          max="100"></progress>
+                <div class="dna-val"
+                     th:text="${user.avgAcousticness != null ? #numbers.formatDecimal(user.avgAcousticness * 100, 1, 1) + '%' : 'N/A'}">%</div>
+                <div class="dna-desc">Acoustic vs electronic balance</div>
+            </div>
+        </div>
+
+        <div th:if="${user.topGenres != null and not #strings.isEmpty(user.topGenres)}"
+             class="top-genres-full">
+            <p class="genre-section-label">YOUR TOP GENRES:</p>
+            <div class="genre-tags">
+                <span th:each="genre : ${#strings.split(user.topGenres, ',')}"
+                      class="genre-tag"
+                      th:text="${genre}">genre</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── DANGER ZONE ────────────────────────────────────────────────── -->
+    <div class="nes-container danger-zone-card">
+        <h2 class="section-title-small danger-title">⚠ DANGER ZONE ⚠</h2>
+        <p>PERMANENTLY DELETE ALL YOUR DATA FROM OUR DATABASE.</p>
+        <p>THIS LOGS YOU OUT AND CANNOT BE UNDONE.</p>
+        <p>YOU CAN ALWAYS LOG BACK IN AND WE WILL RE-FETCH YOUR DATA FROM SPOTIFY.</p>
+
+        <form th:action="@{/profile/delete}" method="post" class="delete-form">
+            <!-- CSRF token (required by Spring Security) -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit"
+                    class="nes-btn is-error delete-btn"
+                    onclick="return confirm('ARE YOU SURE YOU WANT TO DELETE ALL YOUR DATA? THIS CANNOT BE UNDONE.')">
+                🗑 DELETE MY DATA PERMANENTLY
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<footer class="retro-footer">
+    <p>MUSIC RHYTHM MATCH v1.0</p>
+</footer>
+
+</body>
+</html>
