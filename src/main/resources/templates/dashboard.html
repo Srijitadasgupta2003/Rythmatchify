@@ -16,7 +16,10 @@
     <span class="nav-brand">🎮 MUSIC RHYTHM MATCH</span>
     <div class="nav-links">
         <a th:href="@{/profile}" class="nes-btn is-primary nav-btn">⚙ PROFILE</a>
-        <a th:href="@{/}" class="nes-btn is-error nav-btn">⏏ LOGOUT</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="nes-btn is-error nav-btn">⏏ LOGOUT</button>
+        </form>
     </div>
 </nav>
 

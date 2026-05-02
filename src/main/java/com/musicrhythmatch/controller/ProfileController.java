@@ -4,12 +4,15 @@ import com.musicrhythmatch.entity.User;
 import com.musicrhythmatch.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -42,14 +45,20 @@ public class ProfileController {
      * This satisfies the Spotify ToS requirement for a "Delete My Data" feature.
      */
     @PostMapping("/profile/delete")
-    public String deleteData(Principal principal, HttpServletRequest request) throws ServletException {
+    public String deleteData(Principal principal,
+                             HttpServletRequest request,
+                             HttpServletResponse response) throws Exception {
+
         String spotifyId = ((OAuth2AuthenticationToken) principal).getName();
         log.info("User {} requested data deletion.", spotifyId);
 
+        // 1. Delete from Supabase
         userService.deleteUser(spotifyId);
 
-        // Invalidate the HTTP session and clear the security context
-        request.logout();
+        // 2. Let Spring Security handle full logout cleanly
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        new org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler()
+                .logout(request, response, auth);
 
         return "redirect:/?deleted=true";
     }

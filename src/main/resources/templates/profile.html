@@ -15,6 +15,10 @@
 <nav class="top-nav">
     <a th:href="@{/dashboard}" class="nav-back">⬅ BACK TO DASHBOARD</a>
     <span class="nav-brand">⚙ PROFILE</span>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" class="nes-btn is-error nav-btn">⏏ LOGOUT</button>
+    </form>
 </nav>
 
 <div class="profile-page-wrapper">
